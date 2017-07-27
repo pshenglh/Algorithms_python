@@ -18,14 +18,14 @@ class Stack:
         self.first.next = old_first
         self.N += 1
 
-    def isEmpty(self):
+    def is_empty(self):
         return self.N == 0
 
     def size(self):
         return self.N
 
     def pop(self):
-        if self.isEmpty():
+        if self.is_empty():
             return 'StackEmpty'
         value = self.first.value
         self.first = self.first.next
@@ -66,6 +66,35 @@ class Queue:
         self.first = self.first.next
         self.N -= 1
         return value
+
+    def size(self):
+        return self.N
+
+    def is_empty(self):
+        return self.N == 0
+
+    def __iter__(self):
+        self.current = self.first
+        return self
+
+    def next(self):
+        if self.current == None:
+            raise StopIteration
+        value = self.current.value
+        self.current = self.current.next
+        return value
+
+class Bag:
+
+    def __init__(self):
+        self.first = Node
+        self.N = 0
+
+    def add(self, val):
+        old_first = self.first
+        self.first = Node(val)
+        self.first.next = old_first
+        self.N += 1
 
     def size(self):
         return self.N
