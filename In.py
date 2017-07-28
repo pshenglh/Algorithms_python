@@ -20,6 +20,7 @@ class In:
         self.string_list = s
         self.string_iter = iter(s)
         self.n = len(s)
+        self.f.close()
 
     def read_int(self):
         self.n -= 1
@@ -33,7 +34,7 @@ class In:
 
     def read_string(self):
         self.n -= 1
-        return self.string_iter
+        return self.string_iter.next()
 
     def has_next(self):
         return self.n > 0
