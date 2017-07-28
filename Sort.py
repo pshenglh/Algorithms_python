@@ -104,6 +104,42 @@ class MergeBU:
                 self.merge(a, lo, lo+sz-1, min(lo+2*sz, n-1))
             sz *= 2
 
+
+class Quick:
+
+    def partition(self, a, lo, hi):
+        i = lo
+        j = hi + 1
+        v = a[lo]
+        while True:
+            while True:
+                i += 1
+                if a[i] >= v:
+                    break
+                if i == hi:
+                    break
+            while True:
+                j -= 1
+                if a[j] <= v:
+                    break
+                if j <= lo:
+                    break
+            if i >= j:
+                break
+            exch(a, i, j)
+        exch(a, lo, j)
+        return j
+
+    def recurse_sort(self, a, lo, hi):
+        if hi <= lo:
+            return
+        j = self.partition(a, lo, hi)
+        self.recurse_sort(a, lo, j-1)
+        self.recurse_sort(a, j+1, hi)
+
+    def sort(self, a):
+        self.recurse_sort(a, 0, len(a)-1)
+
 class Test:
 
     def test_seletion(self, list):
@@ -122,6 +158,10 @@ class Test:
         merge = Merge()
         merge.sort(list)
 
+    def test_quick(self, list):
+        quick = Quick()
+        quick.sort(list)
+
     def test_mergebu(self, list):
         merge = MergeBU()
         merge.sort(list)
@@ -134,5 +174,5 @@ def exch(list, i, j):
 if __name__ == '__main__':
     a = In('tiny.txt').read_strings()
     test = Test()
-    test.test_mergebu(a)
+    test.test_quick(a)
     print a
