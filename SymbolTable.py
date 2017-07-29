@@ -221,10 +221,114 @@ class BST:
         return self.keys(self.min(), self.max())
 
 
+class RBNode:
+
+    def __init__(self, key, val, n, color):
+        self.key = key
+        self.val = val
+        self.n = n
+        self.left = None
+        self.right = None
+        self.color = color
+
+
+
+class RedBlackBST:
+
+    def __init__(self):
+        self.root = None
+
+
+    def rotate_left(self, h):
+        x = h.right
+        h.right = x.left
+        x.left = h
+        x.color = h.color
+        x.n = h.n
+        h.color = True
+        h.n = self.node_size(h.left) + self.node_size(h.right) + 1
+        return x
+
+    def rotate_right(self, h):
+        x = h.left
+        h.left = x.right
+        x.right = h
+        x.color = h.color
+        x.n = h.n
+        h.color = True
+        h.n = self.node_size(h.left) + self.node_size(h.right) + 1
+        return x
+
+    def node_size(self, x):
+        if x == None: return 0
+        return x.n
+
+    def size(self):
+        return self.node_size(self.root)
+
+    def flip_colors(self, h):
+        h.left.color = False
+        h.right.color = False
+        h.color = True
+
+    def is_red(self, h):
+        if h == None: return False
+        return h.color
+
+    def put(self, key, val):
+        self.root = self.node_put(self.root, key, val)
+        self.root.color = False
+
+    def node_put(self, node, key, val):
+        if node == None:
+            return RBNode(key, val, 1, True)
+        i = cmp(key, node.key)
+        if i < 0:
+            node.left = self.node_put(node.left, key, val)
+        elif i > 0:
+            node.right = self.node_put(node.right, key, val)
+        else:
+            node.val = val
+
+        if self.is_red(node.right) and not self.is_red(node.left):
+            node = self.rotate_left(node)
+        if self.is_red(node.left) and self.is_red(node.left.left):
+            node = self.rotate_right(node)
+        if self.is_red(node.left) and self.is_red(node.right):
+            self.flip_colors(node)
+
+        node.n = self.node_size(node.left) + self.node_size(node.right) + 1
+        return node
+
+    def node_get(self, node, key):
+        if node == None: return None
+        i = cmp(key, node.key)
+        if i < 0:
+            return self.node_get(node.left, key)
+        elif i > 0:
+            return self.node_get(node.right, key)
+        else:
+            return node
+
+    def get(self, key):
+        return self.node_get(self.root, key).val
+
+    def flip_color(self, h):
+        h.color = not h.color
+        h.left.color = not h.left.color
+        h.right.color = not h.right.color
+
+    def move_red_left(self, h):
+        self.flip_color(h)
+        if (self.is_red(h.right.left)):
+            h.right = self.rotate_right(h.right)
+            h = self.rotate_left(h)
+        return h
+
 if __name__ == '__main__':
     i = In('tinyST.txt')
     n = len(i.read_strings())
-    st = BST()
+    st = RedBlackBST()
     j = 0
 
     while i.has_next():
@@ -232,16 +336,6 @@ if __name__ == '__main__':
         st.put(s, j)
         j += 1
 
-    print st.size(), st.rank('P'), st.select(6)
-    print st.min(), st.max(), st.floor('F'), st.ceiling('F')
     for key in i.read_strings():
         print key, st.get(key)
-
-    st.del_min()
-    print st.min()
-    st.delete('X')
-    print st.max()
-    print st.size()
-    for key in st.all_keys():
-        print key,
 
