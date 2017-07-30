@@ -87,7 +87,7 @@ class Queue:
 class Bag:
 
     def __init__(self):
-        self.first = Node
+        self.first = None
         self.N = 0
 
     def add(self, val):
