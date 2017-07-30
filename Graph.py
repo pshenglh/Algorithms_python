@@ -1,23 +1,32 @@
 from In import In
 from BasicDataStructure import Bag, Stack, Queue
+from SymbolTable import BST
 
 
 class Graph:
 
     def __init__(self, f):
-        s = In(f)
-        self.v = s.read_int()
-        self.e = 0
-        self.adj = []
-        for i in range(self.v):
-            bag = Bag()
-            self.adj.append(bag)
+        if type(f) == type(1):
+            self.v = f
+            self.e = 0
+            self.adj = []
+            for i in range(self.v):
+                bag = Bag()
+                self.adj.append(bag)
+        else:
+            s = In(f)
+            self.v = s.read_int()
+            self.e = 0
+            self.adj = []
+            for i in range(self.v):
+                bag = Bag()
+                self.adj.append(bag)
 
-        e = s.read_int()
-        for i in range(e):
-            v = s.read_int()
-            w = s.read_int()
-            self.add_edge(v, w)
+            e = s.read_int()
+            for i in range(e):
+                v = s.read_int()
+                w = s.read_int()
+                self.add_edge(v, w)
 
     def add_edge(self, v, w):
         self.adj[v].add(w)
@@ -104,7 +113,51 @@ class BreadthFirstPath:
         stack.push(self.s)
         return stack
 
-if __name__ == '__main__':
+
+class SymbolGraph:
+    def __init__(self, file):
+        self.st = BST()
+        self.keys = []
+
+        f = open(file, 'r')
+        for line in f:
+            a = line.strip("\n").split(' ')
+            for key in a:
+                if not self.st.contain(key):
+                    self.st.put(key, self.st.size())
+
+        f.close()
+        for i in range(self.st.size()):
+            self.keys.append(None)
+        for key in self.st.all_keys():
+            self.keys[self.st.get(key)] = key
+
+        g = Graph(self.st.size())
+        f = open(file, 'r')
+        for line in f:
+            a = line.strip('\n').split(' ')
+            v = self.st.get(a[0])
+            for w in range(1, len(a)):
+                g.add_edge(v, self.st.get(a[w]))
+        self.g = g
+
+    def contain(self, key):
+        return self.st.contain(key)
+
+    def index(self, key):
+        return self.st.get(key)
+
+    def name(self, i):
+        return self.keys[i]
+
+    def graph(self):
+        return self.g
+
+    def all_key(self):
+        for i, key in enumerate(self.keys):
+            print i, key
+
+def test_graph():
     g = Graph('tinyCG.txt')
     p = BreadthFirstPath(g, 0)
     for i in range(g.v):
@@ -116,3 +169,18 @@ if __name__ == '__main__':
                 else:
                     print '-', j,
             print
+
+def test_sg():
+    sg = SymbolGraph('routes.txt')
+    g = sg.graph()
+    while True:
+        s = raw_input()
+        key = str(s)
+        for w in g.adj1(sg.index(key)):
+            print '   ', sg.name(w)
+
+
+
+
+if __name__ == '__main__':
+    test_sg()

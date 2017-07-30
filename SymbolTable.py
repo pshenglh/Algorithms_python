@@ -203,8 +203,8 @@ class BST:
 
     def recurse_keys(self, queue, node, lo, hi):
         if node == None: return
-        cmplo = cmp(lo, key)
-        cmphi = cmp(hi, key)
+        cmplo = cmp(lo, node.key)
+        cmphi = cmp(hi, node.key)
         if cmplo < 0:
             self.recurse_keys(queue, node.left, lo, hi)
         if cmplo <= 0 and cmphi >= 0:
@@ -219,6 +219,9 @@ class BST:
 
     def all_keys(self):
         return self.keys(self.min(), self.max())
+
+    def contain(self, key):
+        return self.get(key) != None
 
 
 class RBNode:
