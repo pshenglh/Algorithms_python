@@ -167,11 +167,11 @@ class Topological:
             self.order = dfs.reverse_post
 
 def test_symbol_digraph():
-    sg = SymbolDigraph('jobs.txt')
+    sg = SymbolDigraph('data/jobs.txt')
     print sg
 
 def test_top():
-    sg = SymbolDigraph('jobs.txt')
+    sg = SymbolDigraph('data/jobs.txt')
     g = sg.g
 
     top = Topological(g)

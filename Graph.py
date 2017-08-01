@@ -168,7 +168,7 @@ class SymbolGraph:
 
 
 def test_graph():
-    g = Graph('tinyCG.txt')
+    g = Graph('data/tinyCG.txt')
     p = BreadthFirstPath(g, 0)
     for i in range(g.v):
         if p.has_path_to(i):
@@ -181,7 +181,7 @@ def test_graph():
             print
 
 def test_sg():
-    sg = SymbolGraph('routes.txt')
+    sg = SymbolGraph('data/routes.txt')
     g = sg.graph()
     while True:
         s = raw_input()
@@ -190,4 +190,4 @@ def test_sg():
             print '   ', sg.name(w)
 
 if __name__ == '__main__':
-    test_sg()
+    test_graph()
