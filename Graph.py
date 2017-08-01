@@ -33,14 +33,23 @@ class Graph:
         self.adj[w].add(v)
         self.e += 1
 
-    def e(self):
+    def get_e(self):
         return self.e
 
-    def v(self):
+    def get_v(self):
         return self.v
 
-    def adj1(self, v):
+    def get_adj(self, v):
         return self.adj[v]
+
+    def __str__(self):
+        s = ''
+        for v in range(self.get_v()):
+            s = s + str(v) + ': '
+            for w in self.get_adj(v):
+                s = s + str(w) + ' '
+            s += '\n'
+        return s
 
 
 class DepthFistPath:
@@ -57,7 +66,7 @@ class DepthFistPath:
 
     def dfs(self, g, v):
         self.marked[v] = True
-        for w in g.adj1(v):
+        for w in g.get_adj(v):
             if not self.marked[w]:
                 self.edg_to[w] = v
                 self.dfs(g, w)
@@ -93,7 +102,7 @@ class BreadthFirstPath:
         self.marked[s] = True
         while not q.is_empty():
             v = q.dequeue()
-            for w in g.adj1(v):
+            for w in g.get_adj(v):
                 if not self.marked[w]:
                     self.edge_to[w] = v
                     self.marked[w] = True
@@ -157,6 +166,7 @@ class SymbolGraph:
         for i, key in enumerate(self.keys):
             print i, key
 
+
 def test_graph():
     g = Graph('tinyCG.txt')
     p = BreadthFirstPath(g, 0)
@@ -176,11 +186,8 @@ def test_sg():
     while True:
         s = raw_input()
         key = str(s)
-        for w in g.adj1(sg.index(key)):
+        for w in g.get_adj(sg.index(key)):
             print '   ', sg.name(w)
-
-
-
 
 if __name__ == '__main__':
     test_sg()
