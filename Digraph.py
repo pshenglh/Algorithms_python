@@ -119,16 +119,15 @@ class DirectedCycle:
                 if self.has_cycle():
                     return
                 if not self.marked[w]:
-                    if not self.on_stack[w]:
-                        self.edge_to[w] = v
-                        self.dfs(g, w)
-                    elif self.on_stack[w]:
-                        x = v
-                        while x != w:
-                            self.cycle.push(v)
-                            x = self.edge_to[w]
-                        self.cycle.push(w)
-                        self.cycle.push(v)
+                    self.edge_to[w] = v
+                    self.dfs(g, w)
+                elif self.on_stack[w]:
+                    x = v
+                    while x != w:
+                        self.cycle.push(x)
+                        x = self.edge_to[w]
+                    self.cycle.push(w)
+                    self.cycle.push(v)
             self.on_stack[v] = False
 
         def has_cycle(self):
