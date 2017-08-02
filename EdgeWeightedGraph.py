@@ -1,6 +1,7 @@
 from BasicDataStructure import Bag, Queue
 from In import In
 from PQ import MinPQ, IndexPQ
+from UF import UF
 
 class Edge:
     def __init__(self, v, w, weight):
@@ -36,11 +37,13 @@ class EdgeWeightedGraph:
             s = In(f)
             self.initial(s.read_int())
             self.e = s.read_int()
+            self.edges = []
             for i in range(self.e):
                 v = s.read_int()
                 w = s.read_int()
                 weight = s.read_float()
                 e = Edge(v, w, weight)
+                self.edges.append(e)
                 self.add_edge(e)
 
     def add_edge(self, e):
@@ -130,6 +133,23 @@ class PrimMST:
                     self.pq.insert(w, self.dist_to[w])
 
 
+class KruskalMST:
+    def __init__(self, g):
+        self.mst = Queue()
+        self.pq = MinPQ()
+        self.uf = UF(g.v)
+
+        for e in g.edges:
+            self.pq.insert(e)
+
+        while not self.pq.is_empty() and self.mst.size() < g.v - 1:
+            e = self.pq.del_min()
+            v = e.either()
+            w = e.other(v)
+            if self.uf.connected(v, w):
+                continue
+            self.mst.enqueue(e)
+            self.uf.union(v, w)
 
 def test_lazy_prim_mst():
     g = EdgeWeightedGraph('data/tinyEWG.txt')
@@ -143,6 +163,11 @@ def test_prim_mst():
     for e in m.edge_to:
         print e
 
+def test_kmst():
+    g = EdgeWeightedGraph('data/tinyEWG.txt')
+    m = KruskalMST(g)
+    for e in m.mst:
+        print e
 
 if __name__ == '__main__':
-    test_prim_mst()
+    test_kmst()
