@@ -58,11 +58,51 @@ class MSD:
 
         for r in range(0, self.r):
             self.sort(a, lo+count[r], lo+count[r+1]-1, d+1)
+
+
+class Qiuck3String:
+    def __init__(self, a):
+        self.sort(a, 0, len(a)-1, 0)
+
+    def char_at(self, a, d):
+        if d < len(a):
+            return ord(a[d])
+        else:
+            return -1
+
+    def sort(self, a, lo, hi, d):
+        if hi <= lo:
+            return
+        lt = lo
+        gt = hi
+        i = lo + 1
+        v = ord(a[lo][d])
+        while i <= gt:
+            t = ord(a[i][d])
+            if t > v:
+                self.exch(a, i, gt)
+                gt -= 1
+            elif t < v:
+                self.exch(a, i, lt)
+                lt += 1
+                i += 1
+            else:
+                i += 1
+
+        self.sort(a, lo, lt-1, d)
+        if v > 0:
+            self.sort(a, lt, gt, d+1)
+        self.sort(a, gt+1, hi, d)
+
+    def exch(self, a, i, j):
+        tmp = a[i]
+        a[i] = a[j]
+        a[j] = tmp
     
 
 if __name__ == '__main__':
     s = In('data/words3.txt')
     a = s.read_strings()
-    MSD(a)
+    Qiuck3String(a)
     for w in a:
         print w
