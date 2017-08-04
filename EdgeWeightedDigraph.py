@@ -207,6 +207,33 @@ class Acyclisp:
         return path
 
 
+class BellmanFordSP:
+    def __init__(self, g, s):
+        self.dist_to = []
+        self.edge_to = []
+        self.on_q = []
+        self.queue = Queue()
+        self.cost = 0
+        for i in range(g.v):
+            self.dist_to.append(float('inf'))
+            self.edge_to.append(None)
+            self.on_q.append(None)
+        self.queue.enqueue(s)
+        self.on_q[s] = True
+        while not self.queue.is_empty() and not self.has_nagative_cycle():
+            v = self.queue.dequeue()
+            self.on_q[v] = False
+            self.relax(g, v)
+
+    def relax(self, g, v):
+        for e in g.adj[v]:
+            w = e.v_to
+            if self.dist_to[w] > self.dist_to[v] + e.weight:
+                self.dist_to[w] = self.dist_to[v] + e.weight
+                self.edge_to[w] = e
+                if not self.on_q[w]:
+                    self.on_q[w] = True
+                    self.queue.enqueue(w)
 
 def test_dijkstra():
     g = EdgeWeightedDigraph('data/tinyEWDAG.txt')
