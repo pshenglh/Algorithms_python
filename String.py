@@ -188,6 +188,55 @@ class TrieST:
     def delete(self, key):
         self.root = self.node_delete(self.root, key, 0)
 
+class TNode:
+    def __init__(self):
+        self.c = None
+        self.left = None
+        self.mid = None
+        self.right = None
+        self.val = None
+
+class TST:
+
+    def __init__(self):
+        self.root = None
+
+    def recurse_put(self, x, key, val, d):
+        if x == None:
+            x = TNode()
+            x.c = key[d]
+        if key[d] < x.c:
+            x.left = self.recurse_put(x.left, key, val, d)
+        elif key[d] > x.c:
+            x.right = self.recurse_put(x.right, key, val, d)
+        elif d < len(key) - 1:
+            x.mid = self.recurse_put(x.mid, key, val, d+1)
+        else:
+            x.val = val
+        return x
+
+    def put(self, key, val):
+        self.root = self.recurse_put(self.root, key, val, 0)
+
+    def recurse_get(self, x, key, d):
+        if x == None:
+            return None
+        if key[d] < x.c:
+            return self.recurse_get(x.left, key, d)
+        elif key[d] > x.c:
+            return self.recurse_get(x.right, key, d)
+        elif d < len(key) -1:
+            return self.recurse_get(x.mid, key, d+1)
+        else:
+            return x
+
+    def get(self, key):
+        x = self.recurse_get(self.root, key, 0)
+        if x == None:
+            return None
+        else:
+            return x.val
+
 
 def test_sort():
     s = In('data/words3.txt')
@@ -198,7 +247,7 @@ def test_sort():
 
 def test_search():
     s = In('data/shellsST.txt')
-    st = TrieST()
+    st = TST()
     strings = s.read_strings()
     for i, key in enumerate(strings):
         st.put(key, i)
@@ -206,9 +255,6 @@ def test_search():
     for key in strings:
         i = st.get(key)
         print key, i
-    print st.size()
-    for key in st.keys():
-        print key,
 
 
 
