@@ -1,4 +1,5 @@
 from In import In
+from BasicDataStructure import Queue
 
 class LSD:
     def __init__(self, a, w):
@@ -98,11 +99,118 @@ class Qiuck3String:
         tmp = a[i]
         a[i] = a[j]
         a[j] = tmp
-    
 
-if __name__ == '__main__':
+
+class Node:
+    def __init__(self, R):
+        self.val = None
+        self.next_ = [None] * R
+
+
+class TrieST:
+    def __init__(self):
+        self.R = 256
+        self.root = None
+
+    def recurse_put(self, x, key, val, d):
+        if x == None:
+            x = Node(self.R)
+        if d == len(key):
+            x.val = val
+            return x
+        c = ord(key[d])
+        x.next_[c] = self.recurse_put(x.next_[c], key, val, d+1)
+        return x
+
+    def put(self, key, val):
+        self.root = self.recurse_put(self.root, key, val, 0)
+
+    def recurse_get(self, x, key, d):
+        if x == None:
+            return None
+        if d == len(key):
+            return x
+        c = ord(key[d])
+        return self.recurse_get(x.next_[c], key, d+1)
+
+    def get(self, key):
+        x = self.recurse_get(self.root, key, 0)
+        if x == None:
+            return None
+        return x.val
+
+    def node_size(self, x):
+        if x == None:
+            return 0
+        cnt = 0
+        if x.val != None:
+            cnt += 1
+        for r in range(0, self.R):
+            cnt += self.node_size(x.next_[r])
+        return cnt
+
+    def size(self):
+        return self.node_size(self.root)
+
+    def collection(self, x, pre, q):
+        if x == None:
+            return
+        if x.val != None:
+            q.enqueue(pre)
+        for r in range(self.R):
+            self.collection(x.next_[r], pre+chr(r), q)
+        return q
+
+    def keys_with_prefix(self, pre):
+        x = self.recurse_get(self.root, pre, 0)
+        q = Queue()
+        self.collection(x, pre, q)
+        return q
+
+    def keys(self):
+        return self.keys_with_prefix('')
+
+    def node_delete(self, x, key, d):
+        if x == None:
+            return None
+        if d == len(key):
+            x.val = None
+        else:
+            c = ord(key[d])
+            x.next_[c] = self.node_delete(x.next_[c], key, d+1)
+        if x.val != None:
+            return x
+        for c in range(self.R):
+            if x.next_[c] != None:
+                return x
+        return None
+
+    def delete(self, key):
+        self.root = self.node_delete(self.root, key, 0)
+
+
+def test_sort():
     s = In('data/words3.txt')
     a = s.read_strings()
-    Qiuck3String(a)
+    MSD(a)
     for w in a:
         print w
+
+def test_search():
+    s = In('data/shellsST.txt')
+    st = TrieST()
+    strings = s.read_strings()
+    for i, key in enumerate(strings):
+        st.put(key, i)
+
+    for key in strings:
+        i = st.get(key)
+        print key, i
+    print st.size()
+    for key in st.keys():
+        print key,
+
+
+
+if __name__ == '__main__':
+    test_search()
